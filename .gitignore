@@ -1,3 +1,6 @@
+# IDE, OS, and Editor specific files
+.idea
+
 ##### Windows
 # Windows thumbnail cache files
 Thumbs.db

@@ -3,10 +3,8 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use App\Controllers\ProductController;
 use Dotenv\Dotenv;
 use Symfony\Component\HttpFoundation\Request;
-use FastRoute\RouteCollector;
 
 App\Core\Csrf::ensureSession();
 
@@ -16,15 +14,7 @@ if (file_exists($root.'/.env')) {
     $dotenv->load();
 }
 
-$dispatcher = FastRoute\simpleDispatcher(function(RouteCollector $r) {
-    $r->addRoute('GET', '/', [ProductController::class, 'index']);
-    $r->addRoute('GET', '/products/create', [ProductController::class, 'create']);
-    $r->addRoute('POST', '/products/store', [ProductController::class, 'store']);
-    $r->addRoute('GET', '/products/show', [ProductController::class, 'show']);
-    $r->addRoute('GET', '/products/edit', [ProductController::class, 'edit']);
-    $r->addRoute('POST', '/products/update', [ProductController::class, 'update']);
-    $r->addRoute('POST', '/products/delete', [ProductController::class, 'delete']);
-});
+require_once("routes.php");
 
 $httpMethod = $_SERVER['REQUEST_METHOD'];
 $uri = $_SERVER['REQUEST_URI'];

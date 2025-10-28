@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title><?= $this->e($title ?? 'CRUD Evoluído + Upload') ?></title>
+  <title><?= $this->e($title ?? 'CRUD') ?></title>
   <style>
     body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 32px; }
     header { display:flex; align-items:center; justify-content:space-between; margin-bottom:24px; }
@@ -22,8 +22,8 @@
   <header>
     <h1><?= $this->e($title ?? 'CRUD Evoluído + Upload') ?></h1>
     <nav>
-      <a href="/">Produtos</a>
-      <a href="/products/create">Novo</a>
+      <a href="/admin/products">Produtos</a>
+      <a href="/admin/products/create">Novo</a>
     </nav>
   </header>
   <?= $this->section('body') ?>

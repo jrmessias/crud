@@ -1,7 +1,7 @@
-<?php $this->layout('layouts/main', ['title' => 'Novo Produto']) ?>
+<?php $this->layout('layouts/admin', ['title' => 'Novo Produto']) ?>
 
 <?php $this->start('body') ?>
-<form method="post" action="/products/store" enctype="multipart/form-data">
+<form method="post" action="/admin/products/store" enctype="multipart/form-data">
   <label>Nome<br>
     <input name="name" value="<?= $this->e(($old['name'] ?? '') ) ?>" required>
     <?php if (!empty($errors['name'])): ?><div class="error"><?= $this->e($errors['name']) ?></div><?php endif; ?>

@@ -1,4 +1,4 @@
-<?php $this->layout('layouts/main', ['title' => 'Detalhe do Produto']) ?>
+<?php $this->layout('layouts/admin', ['title' => 'Detalhe do Produto']) ?>
 
 <?php $this->start('body') ?>
 <p><b>ID:</b> <?= $this->e($product['id']) ?></p>

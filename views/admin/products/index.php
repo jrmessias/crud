@@ -1,4 +1,4 @@
-<?php $this->layout('layouts/main', ['title' => 'Produtos']) ?>
+<?php $this->layout('layouts/admin', ['title' => 'Produtos']) ?>
 
 <?php $this->start('body') ?>
 <table>
@@ -14,9 +14,9 @@
       <td>R$ <?= number_format((float)$p['price'], 2, ',', '.') ?></td>
       <td><?= $this->e($p['created_at'] ?? '') ?></td>
       <td class="actions">
-        <a href="/products/show?id=<?= $this->e($p['id']) ?>">Ver</a>
-        <a href="/products/edit?id=<?= $this->e($p['id']) ?>">Editar</a>
-        <form class="inline" action="/products/delete" method="post" onsubmit="return confirm('Excluir?');">
+        <a href="/admin/products/show?id=<?= $this->e($p['id']) ?>">Ver</a>
+        <a href="/admin/products/edit?id=<?= $this->e($p['id']) ?>">Editar</a>
+        <form class="inline" action="/admin/products/delete" method="post" onsubmit="return confirm('Excluir?');">
           <input type="hidden" name="id" value="<?= $this->e($p['id']) ?>">
           <?= \App\Core\Csrf::input() ?>
           <button type="submit">Excluir</button>

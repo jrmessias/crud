@@ -1,7 +1,7 @@
-<?php $this->layout('layouts/main', ['title' => 'Editar Produto']) ?>
+<?php $this->layout('layouts/admin', ['title' => 'Editar Produto']) ?>
 
 <?php $this->start('body') ?>
-<form method="post" action="/products/update" enctype="multipart/form-data">
+<form method="post" action="/admin/products/update" enctype="multipart/form-data">
   <input type="hidden" name="id" value="<?= $this->e($product['id']) ?>">
   <label>Nome<br>
     <input name="name" value="<?= $this->e($product['name']) ?>" required>
