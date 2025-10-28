@@ -1,23 +1,25 @@
 <?php
-namespace App\Controllers;
+namespace App\Controllers\Admin;
 
-use App\Core\View;
 use App\Core\Csrf;
+use App\Core\View;
 use App\Repositories\ProductRepository;
+use App\Repositories\UserRepository;
 use App\Services\ProductService;
+use App\Services\UserService;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 
-class ProductController {
+class AuthController {
     private View $view;
     private ProductRepository $repo;
     private ProductService $service;
 
     public function __construct() {
         $this->view = new View();
-        $this->repo = new ProductRepository();
-        $this->service = new ProductService();
+        $this->repo = new UserRepository();
+        $this->service = new UserService();
     }
 
     public function index(Request $request): Response {
