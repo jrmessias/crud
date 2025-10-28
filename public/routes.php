@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Request;
 //$_POST = json_decode(file_get_contents('php://input'), true);
 
 $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $routeCollector) {
+    // Index Site
     $routeCollector->addGroup('/', function (FastRoute\RouteCollector $site) {
         $site->addRoute('GET', '', [SiteController::class, 'index']);
     });
@@ -21,7 +22,7 @@ $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $rou
     });
 
     $routeCollector->addGroup('/admin', function (FastRoute\RouteCollector $group) {
-        // Home
+        // Home Admin
         $group->addGroup('', function (FastRoute\RouteCollector $admin) {
             $admin->addRoute('GET', '', [AdminController::class, 'index']);
         });
@@ -57,11 +58,6 @@ switch ($routeInfo[0]) {
         echo '405';
         break;
     case FastRoute\Dispatcher::FOUND:
-//        $handler = $routeInfo[1];
-//        $vars = ($httpMethod == 'POST')? $_POST : $routeInfo[2];;
-//        list($class, $method) = explode("/", $handler, 2);
-//        call_user_func_array(array(new $class, $method), $vars);
-//        break;
         [$class, $method] = $routeInfo[1];
         $controller = new $class();
         $response = $controller->$method($request);
