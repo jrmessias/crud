@@ -2,24 +2,28 @@
 
 use App\Controllers\Admin\AdminController;
 use App\Controllers\Admin\ProductController;
+use App\Controllers\AuthController;
 use App\Controllers\SiteController;
 use Symfony\Component\HttpFoundation\Request;
+
+//$_POST = json_decode(file_get_contents('php://input'), true);
 
 $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $routeCollector) {
     $routeCollector->addGroup('/', function (FastRoute\RouteCollector $site) {
         $site->addRoute('GET', '', [SiteController::class, 'index']);
     });
 
+    // Autenticação
+    $routeCollector->addGroup('/auth', function (FastRoute\RouteCollector $auth) {
+        $auth->addRoute('GET', '/login', [AuthController::class, 'login']);
+        $auth->addRoute('POST', '/authenticate', [AuthController::class, 'authenticate']);
+        $auth->addRoute('POST', '/logout', [AuthController::class, 'logout']);
+    });
+
     $routeCollector->addGroup('/admin', function (FastRoute\RouteCollector $group) {
+        // Home
         $group->addGroup('', function (FastRoute\RouteCollector $admin) {
             $admin->addRoute('GET', '', [AdminController::class, 'index']);
-        });
-
-        // Autenticação
-        $group->addGroup('/auth', function (FastRoute\RouteCollector $auth) {
-            $auth->addRoute('GET', '/login', [AuthController::class, 'login']);
-            $auth->addRoute('POST', '/authenticate', [AuthController::class, 'authenticate']);
-            $auth->addRoute('POST', '/logout', [AuthController::class, 'logout']);
         });
 
         // Produtos
@@ -45,10 +49,19 @@ $request = Request::createFromGlobals();
 
 switch ($routeInfo[0]) {
     case FastRoute\Dispatcher::NOT_FOUND:
-        http_response_code(404); echo '404'; break;
+        http_response_code(404);
+        echo '404';
+        break;
     case FastRoute\Dispatcher::METHOD_NOT_ALLOWED:
-        http_response_code(405); echo '405'; break;
+        http_response_code(405);
+        echo '405';
+        break;
     case FastRoute\Dispatcher::FOUND:
+//        $handler = $routeInfo[1];
+//        $vars = ($httpMethod == 'POST')? $_POST : $routeInfo[2];;
+//        list($class, $method) = explode("/", $handler, 2);
+//        call_user_func_array(array(new $class, $method), $vars);
+//        break;
         [$class, $method] = $routeInfo[1];
         $controller = new $class();
         $response = $controller->$method($request);
