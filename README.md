@@ -19,3 +19,9 @@
 | Linux: vendor/bin/phinx migrate
 
 | Windows: php vendor/bin/phinx migrate
+
+- Executar os seeds
+
+| Linux: vendor/bin/phinx seed:run
+
+| Windows: php vendor/bin/phinx seed:run
