@@ -1,4 +1,6 @@
-- Copiar .env.example para .env
+- Executar o comando `composer install` para instalar as dependências do projeto.
+
+- Copiar `.env.example` para `.env`
 
 - Configurar conexão com banco de dados com variáveis DB_
 
@@ -25,3 +27,15 @@
 | Linux: vendor/bin/phinx seed:run
 
 | Windows: php vendor/bin/phinx seed:run
+
+------
+
+1. Routes (routes.php)
+2. Controller (ProductController > CategoryController)
+3. Migrations (db/migrations)
+4. Repository (ProductRepository > CategoryRepository)
+5. Model (Product > Category)
+6. Service (ProductService > CategoryService)
+7. Views (duplicar - views/admin/products > categories)
+8. Controller (views)
+9. Views (alterar)

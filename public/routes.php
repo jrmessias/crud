@@ -1,6 +1,7 @@
 <?php
 
 use App\Controllers\Admin\AdminController;
+use App\Controllers\Admin\CategoryController;
 use App\Controllers\Admin\ProductController;
 use App\Controllers\AuthController;
 use App\Controllers\SiteController;
@@ -36,6 +37,17 @@ $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $rou
             $products->addRoute('GET', '/edit', [ProductController::class, 'edit']);
             $products->addRoute('POST', '/update', [ProductController::class, 'update']);
             $products->addRoute('POST', '/delete', [ProductController::class, 'delete']);
+        });
+
+        // Categorias
+        $group->addGroup('/categories', function (FastRoute\RouteCollector $categories) {
+            $categories->addRoute('GET', '', [CategoryController::class, 'index']);
+            $categories->addRoute('GET', '/create', [CategoryController::class, 'create']);
+            $categories->addRoute('POST', '/store', [CategoryController::class, 'store']);
+            $categories->addRoute('GET', '/show', [CategoryController::class, 'show']);
+            $categories->addRoute('GET', '/edit', [CategoryController::class, 'edit']);
+            $categories->addRoute('POST', '/update', [CategoryController::class, 'update']);
+            $categories->addRoute('POST', '/delete', [CategoryController::class, 'delete']);
         });
     });
 });
