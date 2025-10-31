@@ -233,6 +233,10 @@
                 <i class="bi bi-box-seam"></i>
                 <span>Produtos</span>
             </a>
+            <a class="nav-link" href="/admin/categories" data-page="categories">
+                <i class="bi bi-box-seam"></i>
+                <span>Categorias</span>
+            </a>
         </nav>
     </aside>
 

@@ -3,11 +3,8 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
+use App\Services\AuthService;
 use Dotenv\Dotenv;
-
-session_start();
-
-App\Core\Csrf::ensureSession();
 
 $root = dirname(__DIR__, 2);
 if (file_exists($root.'/.env')) {

@@ -1,15 +1,18 @@
 <?php
+
 namespace App\Core;
 
 use Dotenv\Dotenv;
 use PDO;
 
-class Database {
+class Database
+{
     private static ?PDO $conn = null;
 
-    public static function getConnection(): PDO {
+    public static function getConnection(): PDO
+    {
         $root = dirname(__DIR__, 2);
-        if (file_exists($root.'/.env')) {
+        if (file_exists($root . '/.env')) {
             $dotenv = Dotenv::createImmutable($root);
             $dotenv->load();
         }

@@ -5,6 +5,7 @@ use App\Controllers\Admin\CategoryController;
 use App\Controllers\Admin\ProductController;
 use App\Controllers\AuthController;
 use App\Controllers\SiteController;
+use App\Middleware\AuthMiddleware;
 use Symfony\Component\HttpFoundation\Request;
 
 //$_POST = json_decode(file_get_contents('php://input'), true);
@@ -72,6 +73,21 @@ switch ($routeInfo[0]) {
     case FastRoute\Dispatcher::FOUND:
         [$class, $method] = $routeInfo[1];
         $controller = new $class();
+
+        // Módulos protegidos
+        $protectedRoutes = [
+            '/admin',
+        ];
+
+        // Se a rota começar com alguma dessas, exige login
+        foreach ($protectedRoutes as $prefix) {
+            if (str_starts_with($uri, $prefix)) {
+                $redirect = AuthMiddleware::requireLogin();
+                if ($redirect) { $redirect->send(); exit; }
+                break;
+            }
+        }
+
         $response = $controller->$method($request);
         $response->send();
         break;
