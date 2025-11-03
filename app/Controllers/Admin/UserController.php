@@ -71,7 +71,7 @@ class UserController {
     public function edit(Request $request): Response {
         $id = (int)$request->query->get('id', 0);
         $product = $this->repo->find($id);
-        if (!$product) return new Response('Produto não encontrado', 404);
+        if (!$product) return new Response('Usuário não encontrado', 404);
         $html = $this->view->render('admin/users/edit', ['product' => $product, 'csrf' => Csrf::token(), 'errors' => []]);
         return new Response($html);
     }
@@ -80,10 +80,17 @@ class UserController {
         if (!Csrf::validate($request->request->get('_csrf'))) return new Response('Token CSRF inválido', 419);
         $data = $request->request->all();
         $errors = $this->service->validate($data);
+
+        $emailExists = $this->repo->findByEmailNotId($request->get('email'), $data['id']);
+        if($emailExists){
+            $errors['email'] = "E-mail já utilizado.";
+        }
+
         if ($errors) {
             $html = $this->view->render('admin/users/edit', ['product' => array_merge($this->repo->find((int)$data['id']), $data), 'csrf' => Csrf::token(), 'errors' => $errors]);
             return new Response($html, 422);
         }
+
         $product = $this->service->make($data);
         if (!$product->id) return new Response('ID inválido', 422);
         $this->repo->update($product);

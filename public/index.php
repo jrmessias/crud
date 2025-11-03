@@ -3,11 +3,10 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use App\Services\AuthService;
 use Dotenv\Dotenv;
 
 $root = dirname(__DIR__, 2);
-if (file_exists($root.'/.env')) {
+if (file_exists($root . '/.env')) {
     $dotenv = Dotenv::createImmutable($root);
     $dotenv->load();
 }
