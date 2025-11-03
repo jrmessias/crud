@@ -22,11 +22,11 @@
 
 | Windows: php vendor/bin/phinx migrate
 
-- Executar os seeds
+- Criar primeiro usuário
 
-| Linux: vendor/bin/phinx seed:run
-
-| Windows: php vendor/bin/phinx seed:run
+Acesse: localhost:8001/auth/create
+- E-mail: teste@teste.com
+- Senha: teste123
 
 ------
 

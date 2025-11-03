@@ -50,8 +50,8 @@ class CategoryController {
     public function show(Request $request): Response {
         $id = (int)$request->query->get('id', 0);
         $category = $this->repo->find($id);
-        if (!$category) return new Response('Category não encontrada', 404);
-        $html = $this->view->render('admin/categories/show', ['cagetory' => $category]);
+        if (!$category) return new Response('Categoria não encontrada', 404);
+        $html = $this->view->render('admin/categories/show', ['category' => $category]);
         return new Response($html);
     }
 
