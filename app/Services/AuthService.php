@@ -16,7 +16,7 @@ class AuthService
 
     public function register(string $name, string $email, string $password): int
     {
-        $hash = password_hash($password, defined('PASSWORD_ARGON2ID') ? PASSWORD_ARGON2ID : PASSWORD_BCRYPT);
+        $hash = self::hashPassword($password);
         return $this->repo->create($name, strtolower(trim($email)), $hash);
     }
 
@@ -27,11 +27,12 @@ class AuthService
 
         $algo = defined('PASSWORD_ARGON2ID') ? PASSWORD_ARGON2ID : PASSWORD_BCRYPT;
         if (password_needs_rehash($row['password_hash'], $algo)) {
-            $newHash = password_hash($password, $algo);
+            $newHash = self::hashPassword($password);
             $this->repo->updatePasswordHash((int)$row['id'], $newHash);
+            $row['password_hash'] = $newHash;
         }
 
-        $this->login($row['id'], $row['name'], $row['email']);
+        $this->login((int)$row['id'], $row['name'], $row['email']);
         return true;
     }
 
@@ -63,8 +64,13 @@ class AuthService
         $row = $this->repo->find($userId);
         if (!$row || !password_verify($currentPassword, $row['password_hash'])) return false;
 
-        $algo = defined('PASSWORD_ARGON2ID') ? PASSWORD_ARGON2ID : PASSWORD_BCRYPT;
-        $newHash = password_hash($newPassword, $algo);
+        $newHash = self::hashPassword($newPassword);
         return $this->repo->updatePasswordHash($userId, $newHash);
+    }
+
+    public static function hashPassword(string $password): string
+    {
+        $algo = defined('PASSWORD_ARGON2ID') ? PASSWORD_ARGON2ID : PASSWORD_BCRYPT;
+        return password_hash($password, $algo);
     }
 }

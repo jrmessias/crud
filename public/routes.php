@@ -3,12 +3,11 @@
 use App\Controllers\Admin\AdminController;
 use App\Controllers\Admin\CategoryController;
 use App\Controllers\Admin\ProductController;
+use App\Controllers\Admin\UserController;
 use App\Controllers\AuthController;
 use App\Controllers\SiteController;
 use App\Middleware\AuthMiddleware;
 use Symfony\Component\HttpFoundation\Request;
-
-//$_POST = json_decode(file_get_contents('php://input'), true);
 
 $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $routeCollector) {
     // Index Site
@@ -18,8 +17,9 @@ $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $rou
 
     // Autenticação
     $routeCollector->addGroup('/auth', function (FastRoute\RouteCollector $auth) {
-        $auth->addRoute('GET', '/login', [AuthController::class, 'login']);
-        $auth->addRoute('POST', '/authenticate', [AuthController::class, 'authenticate']);
+        $auth->addRoute('GET', '/login', [AuthController::class, 'showLogin']);
+        $auth->addRoute('GET', '/create', [AuthController::class, 'create']);
+        $auth->addRoute('POST', '/login', [AuthController::class, 'login']);
         $auth->addRoute('POST', '/logout', [AuthController::class, 'logout']);
     });
 
@@ -49,6 +49,17 @@ $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $rou
             $categories->addRoute('GET', '/edit', [CategoryController::class, 'edit']);
             $categories->addRoute('POST', '/update', [CategoryController::class, 'update']);
             $categories->addRoute('POST', '/delete', [CategoryController::class, 'delete']);
+        });
+
+        // Usuários
+        $group->addGroup('/users', function (FastRoute\RouteCollector $categories) {
+            $categories->addRoute('GET', '', [UserController::class, 'index']);
+            $categories->addRoute('GET', '/create', [UserController::class, 'create']);
+            $categories->addRoute('POST', '/store', [UserController::class, 'store']);
+            $categories->addRoute('GET', '/show', [UserController::class, 'show']);
+//            $categories->addRoute('GET', '/edit', [UserController::class, 'edit']);
+//            $categories->addRoute('POST', '/update', [UserController::class, 'update']);
+            $categories->addRoute('POST', '/delete', [UserController::class, 'delete']);
         });
     });
 });

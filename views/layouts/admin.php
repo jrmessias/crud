@@ -1,3 +1,10 @@
+<?php
+
+use App\Services\AuthService;
+
+$auth = AuthService::user();
+?>
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -18,31 +25,6 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
         }
 
-        /* Login Screen */
-        .login-wrapper {
-            min-height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .login-card {
-            max-width: 420px;
-            width: 100%;
-        }
-
-        .login-logo {
-            width: 64px;
-            height: 64px;
-            background-color: #667eea;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            margin: 0 auto 1rem;
-        }
 
         /* Header */
         .header {
@@ -54,7 +36,7 @@
             background-color: #2c3e50;
             color: white;
             z-index: 1030;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .header .navbar-brand {
@@ -166,36 +148,6 @@
     </style>
 </head>
 <body>
-<!-- Login Screen -->
-<!--<div class="login-wrapper" id="loginScreen">-->
-<!--    <div class="login-card p-3">-->
-<!--        <div class="card shadow-lg">-->
-<!--            <div class="card-body p-4">-->
-<!--                <div class="text-center mb-4">-->
-<!--                    <div class="login-logo">-->
-<!--                        <i class="bi bi-shield-lock"></i>-->
-<!--                    </div>-->
-<!--                    <h2 class="fw-bold mb-2">Bem-vindo</h2>-->
-<!--                    <p class="text-muted">Faça login para acessar o painel administrativo</p>-->
-<!--                </div>-->
-<!--                <div class="alert alert-danger d-none" id="loginError" role="alert">-->
-<!--                    Usuário ou senha incorretos-->
-<!--                </div>-->
-<!--                <form id="loginForm">-->
-<!--                    <div class="mb-3">-->
-<!--                        <label for="loginUsername" class="form-label">Usuário</label>-->
-<!--                        <input type="text" class="form-control" id="loginUsername" placeholder="Digite seu usuário" required>-->
-<!--                    </div>-->
-<!--                    <div class="mb-3">-->
-<!--                        <label for="loginPassword" class="form-label">Senha</label>-->
-<!--                        <input type="password" class="form-control" id="loginPassword" placeholder="Digite sua senha" required>-->
-<!--                    </div>-->
-<!--                    <button type="submit" class="btn btn-primary w-100">Entrar</button>-->
-<!--                </form>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--</div>-->
 
 <!-- Dashboard Screen -->
 <div id="dashboardScreen">
@@ -208,12 +160,15 @@
             <span class="navbar-brand mb-0 h1"><?= $this->e($title ?? 'CRUD') ?> - Painel Administrativo</span>
             <div class="d-flex align-items-center gap-3">
                 <div class="d-flex align-items-center gap-2">
-                    <div class="user-avatar">AD</div>
-                    <span id="usernameDisplay">Admin</span>
+                    <div class="user-avatar"><?= strtoupper(substr($auth['name'], 0, 2)) ?></div>
+                    <span id="usernameDisplay"><?= $this->e($auth['name']) ?></span>
                 </div>
-                <button class="btn btn-outline-light btn-sm" id="btnLogout">
-                    <i class="bi bi-box-arrow-right"></i> Sair
-                </button>
+                <form class="d-inline" method="post" action="/auth/logout">
+                    <?= \App\Core\Csrf::input() ?>
+                    <button class="btn btn-outline-light btn-sm" id="btnLogout">
+                        <i class="bi bi-box-arrow-right"></i> Sair
+                    </button>
+                </form>
             </div>
         </div>
     </nav>
@@ -225,7 +180,7 @@
                 <i class="bi bi-speedometer2"></i>
                 <span>Dashboard</span>
             </a>
-            <a class="nav-link" href="/admin/users/" data-page="users">
+            <a class="nav-link" href="/admin/users" data-page="users">
                 <i class="bi bi-people"></i>
                 <span>Usuários</span>
             </a>
@@ -266,183 +221,27 @@
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-<!--<script>-->
-<!--    // Authentication logic-->
-<!--    const loginScreen = document.getElementById('loginScreen');-->
-<!--    const dashboardScreen = document.getElementById('dashboardScreen');-->
-<!--    const loginForm = document.getElementById('loginForm');-->
-<!--    const loginError = document.getElementById('loginError');-->
-<!--    const btnLogout = document.getElementById('btnLogout');-->
-<!--    const usernameDisplay = document.getElementById('usernameDisplay');-->
-<!---->
-<!--    // Check if user is already logged in-->
-<!--    function checkAuth() {-->
-<!--        const isLoggedIn = sessionStorage.getItem('isLoggedIn');-->
-<!--        const username = sessionStorage.getItem('username');-->
-<!---->
-<!--        if (isLoggedIn === 'true' && username) {-->
-<!--            showDashboard(username);-->
-<!--        } else {-->
-<!--            showLogin();-->
-<!--        }-->
-<!--    }-->
-<!---->
-<!--    // Login form submit-->
-<!--    loginForm.addEventListener('submit', (e) => {-->
-<!--        e.preventDefault();-->
-<!---->
-<!--        const username = document.getElementById('loginUsername').value;-->
-<!--        const password = document.getElementById('loginPassword').value;-->
-<!---->
-<!--        // Simple authentication (in production, this would be a server request)-->
-<!--        if (username === 'admin' && password === 'admin123') {-->
-<!--            sessionStorage.setItem('isLoggedIn', 'true');-->
-<!--            sessionStorage.setItem('username', username);-->
-<!--            showDashboard(username);-->
-<!--            loginError.classList.add('d-none');-->
-<!--        } else {-->
-<!--            loginError.classList.remove('d-none');-->
-<!--        }-->
-<!--    });-->
-<!---->
-<!--    // Logout-->
-<!--    btnLogout.addEventListener('click', () => {-->
-<!--        sessionStorage.removeItem('isLoggedIn');-->
-<!--        sessionStorage.removeItem('username');-->
-<!--        showLogin();-->
-<!--    });-->
-<!---->
-<!--    // Show dashboard-->
-<!--    function showDashboard(username) {-->
-<!--        loginScreen.classList.add('d-none');-->
-<!--        dashboardScreen.classList.remove('d-none');-->
-<!--        usernameDisplay.textContent = username.charAt(0).toUpperCase() + username.slice(1);-->
-<!--    }-->
-<!---->
-<!--    // Show login-->
-<!--    function showLogin() {-->
-<!--        loginScreen.classList.remove('d-none');-->
-<!--        dashboardScreen.classList.add('d-none');-->
-<!--        loginForm.reset();-->
-<!--        loginError.classList.add('d-none');-->
-<!--    }-->
-<!---->
-<!--    // Initialize-->
-<!--    checkAuth();-->
-<!---->
-<!--    // Dashboard functionality-->
-<!--    const menuToggle = document.getElementById('menuToggle');-->
-<!--    const sidebar = document.getElementById('sidebar');-->
-<!--    const mainContent = document.getElementById('mainContent');-->
-<!--    const footer = document.getElementById('footer');-->
-<!--    const tableView = document.getElementById('tableView');-->
-<!--    const formView = document.getElementById('formView');-->
-<!--    const btnNewUser = document.getElementById('btnNewUser');-->
-<!--    const btnCancelForm = document.getElementById('btnCancelForm');-->
-<!--    const btnCancelForm2 = document.getElementById('btnCancelForm2');-->
-<!--    const userForm = document.getElementById('userForm');-->
-<!--    const formTitle = document.getElementById('formTitle');-->
-<!--    const menuLinks = document.querySelectorAll('.sidebar .nav-link');-->
-<!---->
-<!--    // Toggle sidebar-->
-<!--    menuToggle.addEventListener('click', () => {-->
-<!--        sidebar.classList.toggle('collapsed');-->
-<!--        mainContent.classList.toggle('expanded');-->
-<!--        footer.classList.toggle('expanded');-->
-<!---->
-<!--        // For mobile-->
-<!--        if (window.innerWidth <= 768) {-->
-<!--            sidebar.classList.toggle('mobile-open');-->
-<!--        }-->
-<!--    });-->
-<!---->
-<!--    // Menu navigation-->
-<!--    menuLinks.forEach(link => {-->
-<!--        link.addEventListener('click', (e) => {-->
-<!--            e.preventDefault();-->
-<!---->
-<!--            // Remove active class from all links-->
-<!--            menuLinks.forEach(l => l.classList.remove('active'));-->
-<!---->
-<!--            // Add active class to clicked link-->
-<!--            link.classList.add('active');-->
-<!---->
-<!--            // Update page title-->
-<!--            const pageName = link.querySelector('span').textContent;-->
-<!--            document.getElementById('pageTitle').textContent = pageName;-->
-<!---->
-<!--            // Show table view-->
-<!--            showTableView();-->
-<!---->
-<!--            // Close sidebar on mobile-->
-<!--            if (window.innerWidth <= 768) {-->
-<!--                sidebar.classList.remove('mobile-open');-->
-<!--            }-->
-<!--        });-->
-<!--    });-->
-<!---->
-<!--    // Show form for new user-->
-<!--    btnNewUser.addEventListener('click', () => {-->
-<!--        formTitle.textContent = 'Novo Usuário';-->
-<!--        userForm.reset();-->
-<!--        showFormView();-->
-<!--    });-->
-<!---->
-<!--    // Edit and delete buttons-->
-<!--    document.addEventListener('click', (e) => {-->
-<!--        if (e.target.closest('.btn-edit')) {-->
-<!--            const userId = e.target.closest('.btn-edit').getAttribute('data-id');-->
-<!--            formTitle.textContent = 'Editar Usuário';-->
-<!--            showFormView();-->
-<!--        }-->
-<!---->
-<!--        if (e.target.closest('.btn-delete')) {-->
-<!--            const userId = e.target.closest('.btn-delete').getAttribute('data-id');-->
-<!--            if (confirm('Tem certeza que deseja excluir este usuário?')) {-->
-<!--                alert('Usuário excluído com sucesso!');-->
-<!--            }-->
-<!--        }-->
-<!--    });-->
-<!---->
-<!--    // Cancel form-->
-<!--    btnCancelForm.addEventListener('click', showTableView);-->
-<!--    btnCancelForm2.addEventListener('click', showTableView);-->
-<!---->
-<!--    // Form submit-->
-<!--    userForm.addEventListener('submit', (e) => {-->
-<!--        e.preventDefault();-->
-<!---->
-<!--        const formData = {-->
-<!--            name: document.getElementById('userName').value,-->
-<!--            email: document.getElementById('userEmail').value,-->
-<!--            role: document.getElementById('userRole').value,-->
-<!--            status: document.getElementById('userStatus').value,-->
-<!--            bio: document.getElementById('userBio').value-->
-<!--        };-->
-<!---->
-<!--        alert('Usuário salvo com sucesso!');-->
-<!--        showTableView();-->
-<!--    });-->
-<!---->
-<!--    // Helper functions-->
-<!--    function showTableView() {-->
-<!--        tableView.classList.remove('d-none');-->
-<!--        formView.classList.add('d-none');-->
-<!--    }-->
-<!---->
-<!--    function showFormView() {-->
-<!--        tableView.classList.add('d-none');-->
-<!--        formView.classList.remove('d-none');-->
-<!--    }-->
-<!---->
-<!--    // Close sidebar on mobile when clicking outside-->
-<!--    document.addEventListener('click', (e) => {-->
-<!--        if (window.innerWidth <= 768) {-->
-<!--            if (!sidebar.contains(e.target) && !menuToggle.contains(e.target)) {-->
-<!--                sidebar.classList.remove('mobile-open');-->
-<!--            }-->
-<!--        }-->
-<!--    });-->
-<!--</script>-->
+<script>
+    // Toggle sidebar
+    menuToggle.addEventListener('click', () => {
+        sidebar.classList.toggle('collapsed');
+        mainContent.classList.toggle('expanded');
+        footer.classList.toggle('expanded');
+
+        // For mobile
+        if (window.innerWidth <= 768) {
+            sidebar.classList.toggle('mobile-open');
+        }
+    });
+
+    // Close sidebar on mobile when clicking outside
+    document.addEventListener('click', (e) => {
+        if (window.innerWidth <= 768) {
+            if (!sidebar.contains(e.target) && !menuToggle.contains(e.target)) {
+                sidebar.classList.remove('mobile-open');
+            }
+        }
+    });
+</script>
 </body>
 </html>

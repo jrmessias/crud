@@ -3,38 +3,46 @@
 namespace App\Repositories;
 
 use App\Core\Database;
+use App\Models\User;
 
 class UserRepository
 {
-
-    public function authenticate(string $email, string $password): ?array
-    {
-        $stmt = Database::getConnection()->prepare("SELECT * FROM users WHERE email = ? AND password = ? LIMIT 1");
-        $stmt->execute([$email, $password]);
-//        echo "Debugging PDO Statement:\n";
-//        $stmt->debugDumpParams();
+    public function countAll(): int {
+        $stmt = Database::getConnection()->query("SELECT COUNT(*) FROM users");
+        return (int)$stmt->fetchColumn();
+    }
+    public function paginate(int $page, int $perPage): array {
+        $offset = ($page - 1) * $perPage;
+        $stmt = Database::getConnection()->prepare("SELECT * FROM users ORDER BY id DESC LIMIT :limit OFFSET :offset");
+        $stmt->bindValue(':limit', $perPage, \PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, \PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+    public function find(int $id): ?array {
+        $stmt = Database::getConnection()->prepare("SELECT * FROM users WHERE id = ?");
+        $stmt->execute([$id]);
         $row = $stmt->fetch();
         return $row ?: null;
+    }
+    public function create(User $u): int {
+        $stmt = Database::getConnection()->prepare("INSERT INTO users (name, email, password_hash) VALUES (?, ?, ?)");
+        $stmt->execute([$u->name, $u->email, $u->password_hash]);
+        return (int)Database::getConnection()->lastInsertId();
+    }
+    public function update(User $u): bool {
+        $stmt = Database::getConnection()->prepare("UPDATE users SET name = ?, email = ?, password_hash = ? WHERE id = ?");
+        return $stmt->execute([$u->name, $u->email, $u->password_hash, $u->id]);
+    }
+    public function delete(int $id): bool {
+        $stmt = Database::getConnection()->prepare("DELETE FROM users WHERE id = ?");
+        return $stmt->execute([$id]);
     }
 
     public function findByEmail(string $email): ?array
     {
         $st = Database::getConnection()->prepare("SELECT * FROM users WHERE email=? LIMIT 1");
         $st->execute([$email]);
-        return $st->fetch() ?: null;
-    }
-
-    public function create(string $name, string $email, string $password_hash): int
-    {
-        $st = Database::getConnection()->prepare("INSERT INTO users(name,email,password_hash) VALUES(?,?,?)");
-        $st->execute([$name, $email, $password_hash]);
-        return (int)Database::getConnection()->lastInsertId();
-    }
-
-    public function find(int $id): ?array
-    {
-        $st = Database::getConnection()->prepare("SELECT * FROM users WHERE id=?");
-        $st->execute([$id]);
         return $st->fetch() ?: null;
     }
 

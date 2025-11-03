@@ -3,9 +3,11 @@
 namespace App\Controllers;
 
 use App\Core\Csrf;
+use App\Core\Flash;
 use App\Core\View;
 use App\Repositories\UserRepository;
-use App\Services\UserService;
+use App\Services\AuthService;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -13,39 +15,46 @@ class AuthController
 {
     private View $view;
     private UserRepository $repo;
-    private UserService $service;
 
-    public function __construct()
-    {
+    private AuthService $auth;
+
+    public function __construct(){
         $this->view = new View();
-        $this->repo = new UserRepository();
-        $this->service = new UserService();
+        $this->auth = new AuthService();
     }
 
-    public function login(Request $request): Response
+    function showLogin(): Response
     {
-        $html = $this->view->render('auth/login');
+        $html = $this->view->render('auth/login', ['csrf' => Csrf::token()]);
         return new Response($html);
     }
 
-    public function authenticate(Request $request): Response
+    public function login(Request $req): Response
     {
-        $errors = $this->service->validate($request->request->all());
-        if ($errors) {
-            $html = $this->view->render('auth/login', ['csrf' => Csrf::token(), 'errors' => $errors, 'old' => $request->request->all()]);
-            return new Response($html, 422);
+        if (!Csrf::validate($req->request->get('_csrf'))) return new Response('CSRF inválido', 419);
+        $email = (string)$req->request->get('email', '');
+        $password = (string)$req->request->get('password', '');
+
+        if (!$this->auth->attempt($email, $password)) {
+            Flash::push('danger', 'Credenciais inválidas');
+            return new RedirectResponse('/auth/login');
         }
 
-        $email = $request->get('email');
-        $password = $request->get('password');
-        $user = $this->repo->authenticate($email, $password);
+        Flash::push('success', 'Bem-vindo!');
+        return new RedirectResponse('/admin');
+    }
 
-        if ($user) {
-            header('Location: /admin');
-            exit();
-        }
+    public function logout(): Response
+    {
+        $this->auth->logout();
+        Flash::push('info', 'Sessão encerrada.');
+        return new RedirectResponse('/auth/login');
+    }
 
-        $html = $this->view->render('auth/login');
-        return new Response($html);
+    public function create(): Response
+    {
+        $id = $this->auth->register('Teste', 'teste@teste.com', 'teste123');
+        Flash::push('info', 'Admin criado #' . $id);
+        return new RedirectResponse('/auth/login');
     }
 }
