@@ -9,15 +9,19 @@ class AuthService
 {
     private UserRepository $repo;
 
+    private UserService $service;
+
     public function __construct()
     {
         $this->repo = new UserRepository();
+        $this->service = new UserService();
     }
 
     public function register(string $name, string $email, string $password): int
     {
-        $hash = self::hashPassword($password);
-        return $this->repo->create($name, strtolower(trim($email)), $hash);
+        $user = $this->service->make([$name, strtolower(trim($email)), $password]);
+        $user->password_hash = AuthService::hashPassword($user->password_hash);
+        return $this->repo->create($user);
     }
 
     public function attempt(string $email, string $password): bool
