@@ -19,8 +19,10 @@ class AuthService
 
     public function register(string $name, string $email, string $password): int
     {
-        $user = $this->service->make([$name, strtolower(trim($email)), $password]);
-        $user->password_hash = AuthService::hashPassword($user->password_hash);
+        $data['name'] = $name;
+        $data['email'] = strtolower(trim($email));
+        $data['password'] = AuthService::hashPassword($password);
+        $user = $this->service->make($data);
         return $this->repo->create($user);
     }
 
