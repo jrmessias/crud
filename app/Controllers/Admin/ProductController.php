@@ -29,7 +29,7 @@ class ProductController {
         $total = $this->repo->countAll();
         $products = $this->repo->paginate($page, $perPage);
         $pages = (int)ceil($total / $perPage);
-        $categories = $this->categoryRepo->findAll();
+        $categories = $this->categoryRepo->getArray();
         $html = $this->view->render('admin/products/index', compact('products','page','pages', 'categories'));
         return new Response($html);
     }

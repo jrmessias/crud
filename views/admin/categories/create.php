@@ -16,7 +16,7 @@
                 <div class="col-md-6 mb-3">
                     <label for="text" class="form-label">Texto</label>
                     <input type="text" class="form-control" id="text" name="text"
-                           placeholder="Digite o texto" value="<?= $this->e(($old['text'] ?? '')) ?>" required>
+                           placeholder="Digite o texto" value="<?= $this->e(($old['text'] ?? '')) ?>">
                     <?php if (!empty($errors['text'])): ?>
                         <div class="text-danger"><?= $this->e($errors['text']) ?></div><?php endif; ?>
                 </div>

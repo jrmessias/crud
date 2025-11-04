@@ -57,4 +57,16 @@ class CategoryRepository
         $stmt->execute();
         return $stmt->fetchAll();
     }
+
+    public function getArray(): array
+    {
+        $stmt = Database::getConnection()->prepare("SELECT * FROM categories ORDER BY id DESC");
+        $stmt->execute();
+        $categories = $stmt->fetchAll();
+        $return = [];
+        foreach ($categories as $category) {
+            $return[$category['id']] = $category['name'];
+        }
+        return $return;
+    }
 }
