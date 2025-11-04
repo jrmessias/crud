@@ -209,6 +209,7 @@ $auth = AuthService::user();
         </div>
 
         <!-- Table View -->
+        <?php $this->insert('partials/admin/flash') ?>
         <?= $this->section('body') ?>
     </main>
 

@@ -35,6 +35,25 @@
                 <div class="col-md-6 mb-3">
                 </div>
             </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="category_id" class="form-label">Categoria</label>
+                    <select class="form-select" id="category_id" name="category_id"  required>
+                        <option value="">Selecione uma categoria</option>
+                        <?php foreach ($categories as $category): ?>
+                            <option value="<?= $category['id'] ?>" <?= $this->e(($old['category_id'] ?? $product['category_id']) == $category['id'] ? 'selected' : '') ?>>
+                                <?= $this->e($category['name']) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                    <?php if (!empty($errors['category_id'])): ?>
+                        <div class="error"><?= $this->e($errors['category_id']) ?></div>
+                    <?php endif; ?>
+                </div>
+                <div class="col-md-6 mb-3">
+
+                </div>
+            </div>
             <div class="d-flex gap-3">
                 <button type="submit" class="btn btn-primary">
                     <i class="bi bi-check-lg"></i> Atualizar
@@ -50,27 +69,4 @@
         </form>
     </div>
 </div>
-<!--<form method="post" action="/admin/products/update" enctype="multipart/form-data">-->
-<!--  <input type="hidden" name="id" value="--><?php //= $this->e($product['id']) ?><!--">-->
-<!--  <label>Nome<br>-->
-<!--    <input name="name" value="--><?php //= $this->e($product['name']) ?><!--" required>-->
-<!--    --><?php //if (!empty($errors['name'])): ?><!--<div class="error">--><?php //= $this->e($errors['name']) ?><!--</div>--><?php //endif; ?>
-<!--  </label><br><br>-->
-<!---->
-<!--  <label>Preço<br>-->
-<!--    <input name="price" type="number" step="0.01" value="--><?php //= $this->e($product['price']) ?><!--" required>-->
-<!--    --><?php //if (!empty($errors['price'])): ?><!--<div class="error">--><?php //= $this->e($errors['price']) ?><!--</div>--><?php //endif; ?>
-<!--  </label><br><br>-->
-<!---->
-<!--  <label>Imagem (substitui a atual) — opcional<br>-->
-<!--    --><?php //if (!empty($product['image_path'])): ?>
-<!--      <img class="thumb" src="--><?php //= $this->e($product['image_path']) ?><!--" alt=""><br>-->
-<!--    --><?php //endif; ?>
-<!--    <input type="file" name="image" accept="image/*">-->
-<!--    --><?php //if (!empty($errors['image'])): ?><!--<div class="error">--><?php //= $this->e($errors['image']) ?><!--</div>--><?php //endif; ?>
-<!--  </label><br><br>-->
-<!---->
-<!--  --><?php //= \App\Core\Csrf::input() ?>
-<!--  <button type="submit">Atualizar</button>-->
-<!--</form>-->
 <?php $this->stop() ?>

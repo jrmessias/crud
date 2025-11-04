@@ -9,9 +9,11 @@ class ProductService {
         $errors = [];
         $name = trim($data['name'] ?? '');
         $price = $data['price'] ?? '';
+        $category_id = $data['category_id'] ?? '';
 
         if ($name === '') $errors['name'] = 'Nome é obrigatório';
         if (!is_numeric($price) || (float)$price <= 0) $errors['price'] = 'Preço deve ser numérico e maior que zero';
+        if ($category_id === '') $errors['category_id'] = 'Categoria é obrigatória';
 
         if ($file) {
             $maxMb = (int)($_ENV['UPLOAD_MAX_MB'] ?? 5);
@@ -23,6 +25,7 @@ class ProductService {
                 $errors['image'] = 'Tamanho máximo: ' . $maxMb . 'MB';
             }
         }
+
         return $errors;
     }
 
@@ -38,7 +41,8 @@ class ProductService {
     public function make(array $data, ?string $imagePath = null): Product {
         $name = trim($data['name'] ?? '');
         $price = (float)($data['price'] ?? 0);
+        $category_id = (int)($data['category_id'] ?? 0);
         $id = isset($data['id']) ? (int)$data['id'] : null;
-        return new Product($id, $name, $price, $imagePath);
+        return new Product($id, $name, $price, $category_id, $imagePath);
     }
 }

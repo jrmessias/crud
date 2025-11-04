@@ -1,41 +1,52 @@
 <?php
+
 namespace App\Controllers\Admin;
 
 use App\Core\Csrf;
+use App\Core\Flash;
 use App\Core\View;
 use App\Repositories\CategoryRepository;
+use App\Repositories\ProductRepository;
 use App\Services\CategoryService;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class CategoryController {
+class CategoryController
+{
     private View $view;
     private CategoryRepository $repo;
     private CategoryService $service;
 
-    public function __construct() {
+    private ProductRepository $productRepo;
+
+    public function __construct()
+    {
         $this->view = new View();
         $this->repo = new CategoryRepository();
         $this->service = new CategoryService();
+        $this->productRepo = new ProductRepository();
     }
 
-    public function index(Request $request): Response {
+    public function index(Request $request): Response
+    {
         $page = max(1, (int)$request->query->get('page', 1));
         $perPage = 5;
         $total = $this->repo->countAll();
         $categories = $this->repo->paginate($page, $perPage);
         $pages = (int)ceil($total / $perPage);
-        $html = $this->view->render('admin/categories/index', compact('categories','page','pages'));
+        $html = $this->view->render('admin/categories/index', compact('categories', 'page', 'pages'));
         return new Response($html);
     }
 
-    public function create(): Response {
+    public function create(): Response
+    {
         $html = $this->view->render('admin/categories/create', ['csrf' => Csrf::token(), 'errors' => []]);
         return new Response($html);
     }
 
-    public function store(Request $request): Response {
+    public function store(Request $request): Response
+    {
         if (!Csrf::validate($request->request->get('_csrf'))) return new Response('Token CSRF inválido', 419);
         $errors = $this->service->validate($request->request->all());
         if ($errors) {
@@ -47,7 +58,8 @@ class CategoryController {
         return new RedirectResponse('/admin/categories/show?id=' . $id);
     }
 
-    public function show(Request $request): Response {
+    public function show(Request $request): Response
+    {
         $id = (int)$request->query->get('id', 0);
         $category = $this->repo->find($id);
         if (!$category) return new Response('Categoria não encontrada', 404);
@@ -55,7 +67,8 @@ class CategoryController {
         return new Response($html);
     }
 
-    public function edit(Request $request): Response {
+    public function edit(Request $request): Response
+    {
         $id = (int)$request->query->get('id', 0);
         $category = $this->repo->find($id);
         if (!$category) return new Response('Categoria não encontrada', 404);
@@ -63,7 +76,8 @@ class CategoryController {
         return new Response($html);
     }
 
-    public function update(Request $request): Response {
+    public function update(Request $request): Response
+    {
         if (!Csrf::validate($request->request->get('_csrf'))) return new Response('Token CSRF inválido', 419);
         $data = $request->request->all();
         $file = $request->files->get('image');
@@ -78,7 +92,16 @@ class CategoryController {
         return new RedirectResponse('/admin/categories/show?id=' . $category->id);
     }
 
-    public function delete(Request $request): Response {
+    public function delete(Request $request): Response
+    {
+        // Pegar produto com categoria
+        $categories = $this->productRepo->findByCategoryId((int)$request->request->get('id', 0));
+        if (count($categories) > 0) {
+            Flash::push("danger", "Categoria não pode ser excluída");
+            return new RedirectResponse('/admin/categories');
+        }
+
+
         if (!Csrf::validate($request->request->get('_csrf'))) return new Response('Token CSRF inválido', 419);
         $id = (int)$request->request->get('id', 0);
         if ($id > 0) $this->repo->delete($id);

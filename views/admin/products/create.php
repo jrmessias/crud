@@ -26,9 +26,29 @@
                     <label for="formFile" class="form-label">Imagem (JPEG, PNG, WEBP) — opcional</label>
                     <input class="form-control" type="file" id="image" name="image" accept="image/*">
                     <?php if (!empty($errors['image'])): ?>
-                        <div class="error"><?= $this->e($errors['image']) ?></div><?php endif; ?>
+                        <div class="error"><?= $this->e($errors['image']) ?></div>
+                    <?php endif; ?>
                 </div>
                 <div class="col-md-6 mb-3">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="category_id" class="form-label">Categoria</label>
+                    <select class="form-select" id="category_id" name="category_id"  required>
+                        <option value="">Selecione uma categoria</option>
+                        <?php foreach ($categories as $category): ?>
+                        <option value="<?= $category['id'] ?>" <?= $this->e(($old['category_id'] ?? '') == $category['id'] ? 'selected' : '') ?>>
+                                <?= $this->e($category['name']) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                    <?php if (!empty($errors['category_id'])): ?>
+                        <div class="error"><?= $this->e($errors['category_id']) ?></div>
+                    <?php endif; ?>
+                </div>
+                <div class="col-md-6 mb-3">
+
                 </div>
             </div>
             <div class="d-flex gap-3">
