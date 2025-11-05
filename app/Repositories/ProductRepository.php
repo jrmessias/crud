@@ -41,6 +41,6 @@ class ProductRepository {
         $stmt = Database::getConnection()->prepare("SELECT * FROM products WHERE category_id = ?");
         $stmt->execute([$id]);
         $row = $stmt->fetch();
-        return $row ?: null;
+        return $row ?: [];
     }
 }
